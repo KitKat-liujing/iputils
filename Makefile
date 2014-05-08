@@ -19,10 +19,10 @@ LDFLAG_DYNAMIC=-Wl,-Bdynamic
 
 LDFLAG_CAP=-lcap＃加载cap函数库
 LDFLAG_GNUTLS=-lgnutls-openssl＃加载TLS加密函数库
-LDFLAG_CRYPTO=-lcrypto＃srypto加密解密函数库
-LDFLAG_IDN=-lidn  #idn恒等函数库
-LDFLAG_RESOLV=-lresolv＃resolv函数库
-LDFLAG_SYSFS=-lsysfs　＃sysfs接口函数库
+LDFLAG_CRYPTO=-lcrypto＃加载rypto加密解密函数库
+LDFLAG_IDN=-lidn  #加载idn恒等函数库
+LDFLAG_RESOLV=-lresolv＃加载resolv函数库
+LDFLAG_SYSFS=-lsysfs　＃加载sysfs接口函数库
 
 #
 # Options选项
@@ -38,8 +38,8 @@ USE_SYSFS=no
 ＃IDN函数库的支持，用experimental表示，状态分别为：没有，是，静态
 USE_IDN=no　＃默认状态为第一个
 
-# Do not use getifaddrs [no|yes|static]＃默认不使用getifaddrs函数获得接口的相关信息
-WITHOUT_IFADDRS=no
+# Do not use getifaddrs [no|yes|static]
+WITHOUT_IFADDRS=no ＃默认不使用getifaddrs函数获得接口的相关信息
 # arping default device (e.g. eth0) []　
 ＃arping默认设备，如网卡、以太网、无线
 ARPING_DEFAULT_DEVICE=
@@ -147,12 +147,12 @@ TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)
 # -------------------------------------
 ＃检查内核模块在编译过程中产生的中间文件即垃圾文件并加以清除
 .PHONY: all ninfod clean distclean man html check-kernel modules snapshot
-
+#.PHONY后面是伪目标文件
 all: $(TARGETS)
 
-%.s: %.c
-	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -S -o $@
-%.o: %.c
+%.s: %.c　＃符号％是通配符，%.s依赖%.c
+	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -S -o $@ 
+%.o: %.c  ＃%.o依赖%.c
 	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -o $@
 $(TARGETS): %: %.o
 	$(LINK.o) $^ $(LIB_$@) $(LDLIBS) -o $@

@@ -28,29 +28,33 @@ LDFLAG_SYSFS=-lsysfs　＃sysfs接口函数库
 # Options选项
 #
 #变量定义，设置开关
-# Capability support (with libcap) [yes|static|no]　功能支持（与libcap的）[是|静态|否]
+# Capability support (with libcap) [yes|static|no]　
+＃cap函数库的支持，用libcap表示，状态分别是：是，静态，没有
 USE_CAP=yes
-# sysfs support (with libsysfs - deprecated) [no|yes|static]sysfs的支持（与libsysfs  - 不建议使用）[NO | YES |静态]
+# sysfs support (with libsysfs - deprecated) [no|yes|static]　　
+＃sysfs函数库的支持，用libsysfs-deprecated表示，状态分别是：没有，是，静态
 USE_SYSFS=no
-# IDN support (experimental) [no|yes|static]
-USE_IDN=no
+# IDN support (experimental) [no|yes|static]　
+＃IDN函数库的支持，用experimental表示，状态分别为：没有，是，静态
+USE_IDN=no　＃默认状态为第一个
 
-# Do not use getifaddrs [no|yes|static]＃不要使用getifaddrs [NO | YES |静态]
+# Do not use getifaddrs [no|yes|static]＃默认不使用getifaddrs函数获得接口的相关信息
 WITHOUT_IFADDRS=no
-# arping default device (e.g. eth0) []
+# arping default device (e.g. eth0) []　
+＃arping默认设备，如网卡、以太网、无线
 ARPING_DEFAULT_DEVICE=
 
-# GNU TLS library for ping6 [yes|no|static]　GNU TLS库ping6 [是|否|静态]
-USE_GNUTLS=yes
-# Crypto library for ping6 [shared|static]　加密库ping6 [共享|静态]
-USE_CRYPTO=shared
+# GNU TLS library for ping6 [yes|no|static]　
+USE_GNUTLS=yes　＃默认GNU TLS库ping6的状态为：是
+# Crypto library for ping6 [shared|static]　
+USE_CRYPTO=shared　＃默认加密解密库ping6的状态为：共享
 # Resolv library for ping6 [yes|static]　＃RESOLV库ping6 [是|静态]
-USE_RESOLV=yes
-# ping6 source routing (deprecated by RFC5095) [no|yes|RFC3542]　＃ping6源路由（由RFC5095不建议使用）[NO | YES | RFC3542]
-ENABLE_PING6_RTHDR=no
+USE_RESOLV=yes　＃默认resolv 库ping6的状态为：是
+# ping6 source routing (deprecated by RFC5095) [no|yes|RFC3542]　
+ENABLE_PING6_RTHDR=no　＃默认ping6源路由的状态为：没有，这里不推荐使用RFC5095
 
 # rdisc server (-r option) support [no|yes]
-ENABLE_RDISC_SERVER=no
+ENABLE_RDISC_SERVER=no　＃默认RDISC服务器是不支持－r选项的
 
 # -------------------------------------
 # What a pity, all new gccs are buggy and -Werror does not work. Sigh.
@@ -64,8 +68,10 @@ LDLIB=
 
 FUNC_LIB = $(if $(filter static,$(1)),$(LDFLAG_STATIC) $(2) $(LDFLAG_DYNAMIC),$(2)) #宏定义
 
+＃判断每个函数库中是否重复包含函数
 # USE_GNUTLS: DEF_GNUTLS, LIB_GNUTLS
 # USE_CRYPTO: LIB_CRYPTO
+＃判断crypto加密解密函数库中的函数是否重复
 ifneq ($(USE_GNUTLS),no)＃ifneq表示条件语句开始
 	LIB_CRYPTO = $(call FUNC_LIB,$(USE_GNUTLS),$(LDFLAG_GNUTLS))
 	DEF_CRYPTO = -DUSE_GNUTLS
@@ -74,26 +80,31 @@ else
 endif＃表示一个条件语句结束
 
 # USE_RESOLV: LIB_RESOLV
+＃判断resolv函数库中的函数是否重复
 LIB_RESOLV = $(call FUNC_LIB,$(USE_RESOLV),$(LDFLAG_RESOLV))
 
 # USE_CAP:  DEF_CAP, LIB_CAP
+＃判断cap函数库中的函数是否重复
 ifneq ($(USE_CAP),no)
 	DEF_CAP = -DCAPABILITIES
 	LIB_CAP = $(call FUNC_LIB,$(USE_CAP),$(LDFLAG_CAP))
 endif
 
 # USE_SYSFS: DEF_SYSFS, LIB_SYSFS
+＃判断sysfs 接口函数库中的函数是否重复
 ifneq ($(USE_SYSFS),no)
 	DEF_SYSFS = -DUSE_SYSFS
 	LIB_SYSFS = $(call FUNC_LIB,$(USE_SYSFS),$(LDFLAG_SYSFS))
 endif
 
 # USE_IDN: DEF_IDN, LIB_IDN
+＃判断IDN恒等函数库中的函数是否重复
 ifneq ($(USE_IDN),no)
 	DEF_IDN = -DUSE_IDN
 	LIB_IDN = $(call FUNC_LIB,$(USE_IDN),$(LDFLAG_IDN))
 endif
 
+＃判断重复加载
 # WITHOUT_IFADDRS: DEF_WITHOUT_IFADDRS
 ifneq ($(WITHOUT_IFADDRS),no)
 	DEF_WITHOUT_IFADDRS = -DWITHOUT_IFADDRS
@@ -128,6 +139,7 @@ TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)
 
 
 # -------------------------------------
+＃检查内核模块在编译过程中产生的中间文件即垃圾文件并加以清除
 .PHONY: all ninfod clean distclean man html check-kernel modules snapshot
 
 all: $(TARGETS)

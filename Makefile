@@ -6,9 +6,9 @@
 CC=gcc
 # Path to parent kernel include files directory　路径的父内核头文件目录
 LIBC_INCLUDE=/usr/include
-# Libraries
+# Libraries　库
 ADDLIB=
-# Linker flags
+# Linker flags　连接标志
 ＃Wl选项告诉编译器将后面的参数传递给连接器
 #-Wl,-Bstatic告诉链接器使用-Bstatic选项，该选项是告诉链接器，对接下来的-l选项使用静态链接
 #-Wl,-Bstatic告诉链接器使用-Bstatic选项，该选项是告诉链接器，对接下来的-l选项使用静态链接
@@ -17,36 +17,36 @@ LDFLAG_STATIC=-Wl,-Bstatic　
 #指定加载库
 LDFLAG_DYNAMIC=-Wl,-Bdynamic
 
-LDFLAG_CAP=-lcap
-LDFLAG_GNUTLS=-lgnutls-openssl
-LDFLAG_CRYPTO=-lcrypto
-LDFLAG_IDN=-lidn
-LDFLAG_RESOLV=-lresolv
-LDFLAG_SYSFS=-lsysfs
+LDFLAG_CAP=-lcap＃加载cap函数库
+LDFLAG_GNUTLS=-lgnutls-openssl＃加载TLS加密函数库
+LDFLAG_CRYPTO=-lcrypto＃srypto加密解密函数库
+LDFLAG_IDN=-lidn  #idn恒等函数库
+LDFLAG_RESOLV=-lresolv＃resolv函数库
+LDFLAG_SYSFS=-lsysfs　＃sysfs接口函数库
 
 #
-# Options
+# Options选项
 #
 #变量定义，设置开关
-# Capability support (with libcap) [yes|static|no]
+# Capability support (with libcap) [yes|static|no]　功能支持（与libcap的）[是|静态|否]
 USE_CAP=yes
-# sysfs support (with libsysfs - deprecated) [no|yes|static]
+# sysfs support (with libsysfs - deprecated) [no|yes|static]sysfs的支持（与libsysfs  - 不建议使用）[NO | YES |静态]
 USE_SYSFS=no
 # IDN support (experimental) [no|yes|static]
 USE_IDN=no
 
-# Do not use getifaddrs [no|yes|static]
+# Do not use getifaddrs [no|yes|static]＃不要使用getifaddrs [NO | YES |静态]
 WITHOUT_IFADDRS=no
 # arping default device (e.g. eth0) []
 ARPING_DEFAULT_DEVICE=
 
-# GNU TLS library for ping6 [yes|no|static]
+# GNU TLS library for ping6 [yes|no|static]　GNU TLS库ping6 [是|否|静态]
 USE_GNUTLS=yes
-# Crypto library for ping6 [shared|static]
+# Crypto library for ping6 [shared|static]　加密库ping6 [共享|静态]
 USE_CRYPTO=shared
-# Resolv library for ping6 [yes|static]
+# Resolv library for ping6 [yes|static]　＃RESOLV库ping6 [是|静态]
 USE_RESOLV=yes
-# ping6 source routing (deprecated by RFC5095) [no|yes|RFC3542]
+# ping6 source routing (deprecated by RFC5095) [no|yes|RFC3542]　＃ping6源路由（由RFC5095不建议使用）[NO | YES | RFC3542]
 ENABLE_PING6_RTHDR=no
 
 # rdisc server (-r option) support [no|yes]
@@ -57,21 +57,21 @@ ENABLE_RDISC_SERVER=no
 # CCOPT=-fno-strict-aliasing -Wstrict-prototypes -Wall -Werror -g
 #-Wstrict-prototypes: 如果函数的声明或定义没有指出参数类型，编译器就发出警告
 CCOPT=-fno-strict-aliasing -Wstrict-prototypes -Wall -g
-CCOPTOPT=-O3
+CCOPTOPT=-O3　#  对代码进行３级优化
 GLIBCFIX=-D_GNU_SOURCE
 DEFINES=
 LDLIB=
 
-FUNC_LIB = $(if $(filter static,$(1)),$(LDFLAG_STATIC) $(2) $(LDFLAG_DYNAMIC),$(2))
+FUNC_LIB = $(if $(filter static,$(1)),$(LDFLAG_STATIC) $(2) $(LDFLAG_DYNAMIC),$(2)) #宏定义
 
 # USE_GNUTLS: DEF_GNUTLS, LIB_GNUTLS
 # USE_CRYPTO: LIB_CRYPTO
-ifneq ($(USE_GNUTLS),no)
+ifneq ($(USE_GNUTLS),no)＃ifneq表示条件语句开始
 	LIB_CRYPTO = $(call FUNC_LIB,$(USE_GNUTLS),$(LDFLAG_GNUTLS))
 	DEF_CRYPTO = -DUSE_GNUTLS
 else
 	LIB_CRYPTO = $(call FUNC_LIB,$(USE_CRYPTO),$(LDFLAG_CRYPTO))
-endif
+endif＃表示一个条件语句结束
 
 # USE_RESOLV: LIB_RESOLV
 LIB_RESOLV = $(call FUNC_LIB,$(USE_RESOLV),$(LDFLAG_RESOLV))

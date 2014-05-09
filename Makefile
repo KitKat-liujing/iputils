@@ -77,54 +77,53 @@ FUNC_LIB = $(if $(filter static,$(1)),$(LDFLAG_STATIC) $(2) $(LDFLAG_DYNAMIC),$(
 # USE_GNUTLS: DEF_GNUTLS, LIB_GNUTLS
 # USE_CRYPTO: LIB_CRYPTO
 ＃判断crypto加密解密函数库中的函数是否重复
-ifneq ($(USE_GNUTLS),no)＃ifneq表示条件语句开始,如果USE_GNUTLS不是"no",
+ifneq ($(USE_GNUTLS),no)＃ifneq表示条件语句开始,如果USE_GNUTLS不是"no",如果USE_GNUTLS不是"no",则以变量USE_GNUTLS和LDFLAG_GNUTLS的内容为参数调用FUNC_LIB,并将结果赋给LIB_CRYPTO。
+#因为USE_GNUTLS的值是yes,所以可以调用。
 	LIB_CRYPTO = $(call FUNC_LIB,$(USE_GNUTLS),$(LDFLAG_GNUTLS))
-	DEF_CRYPTO = -DUSE_GNUTLS
+	DEF_CRYPTO = -DUSE_GNUTLS  #将-DUSE_GNUTLS这个参数赋给DEF_CRYPTO.
 else
-	LIB_CRYPTO = $(call FUNC_LIB,$(USE_CRYPTO),$(LDFLAG_CRYPTO))
+	LIB_CRYPTO = $(call FUNC_LIB,$(USE_CRYPTO),$(LDFLAG_CRYPTO))    #将-DUSE_GNUTLS这个参数赋给DEF_CRYPTO.
 endif＃表示一个条件语句结束
 
 # USE_RESOLV: LIB_RESOLV
 ＃判断resolv函数库中的函数是否重复
-LIB_RESOLV = $(call FUNC_LIB,$(USE_RESOLV),$(LDFLAG_RESOLV))
+LIB_RESOLV = $(call FUNC_LIB,$(USE_RESOLV),$(LDFLAG_RESOLV)) #以变量USE_RESOLV和LDFLAG_RESOLV的内容为参数调用FUNC_LIB,并将结果赋给LIB_RESOLV。
 
 # USE_CAP:  DEF_CAP, LIB_CAP
 ＃判断cap函数库中的函数是否重复
-ifneq ($(USE_CAP),no)
-	DEF_CAP = -DCAPABILITIES
-	LIB_CAP = $(call FUNC_LIB,$(USE_CAP),$(LDFLAG_CAP))
+ifneq ($(USE_CAP),no)   #判断USE_CAP的值是否为no。
+	DEF_CAP = -DCAPABILITIES  #如果不是则将参数-DCAPABILITIES赋给DEF_CAP
+	LIB_CAP = $(call FUNC_LIB,$(USE_CAP),$(LDFLAG_CAP))   #以变量USE_CAP和LDFLAG_CAP的内容为参数调用FUNC_LIB,并将结果赋给 
 endif
 
 # USE_SYSFS: DEF_SYSFS, LIB_SYSFS
-＃判断sysfs 接口函数库中的函数是否重复
-ifneq ($(USE_SYSFS),no)
-	DEF_SYSFS = -DUSE_SYSFS
-	LIB_SYSFS = $(call FUNC_LIB,$(USE_SYSFS),$(LDFLAG_SYSFS))
+ifneq ($(USE_SYSFS),no)  #判断USE_SYSFS是否为no
+	DEF_SYSFS = -DUSE_SYSFS    #如果不是则将参数-DUSE_SYSFS 赋给 DEF_SYSFS
+	LIB_SYSFS = $(call FUNC_LIB,$(USE_SYSFS),$(LDFLAG_SYSFS)) #以变量USE_SYSTEM和LDFLAG_CAP的内容为参数调用LDFLAG_SYSFS,并将结果赋给LIB_SYSFS。
 endif
 
 # USE_IDN: DEF_IDN, LIB_IDN
-＃判断IDN恒等函数库中的函数是否重复
-ifneq ($(USE_IDN),no)
-	DEF_IDN = -DUSE_IDN
-	LIB_IDN = $(call FUNC_LIB,$(USE_IDN),$(LDFLAG_IDN))
+ifneq ($(USE_IDN),no) #判断USE_IDN是否为no
+	DEF_IDN = -DUSE_IDN  #将-DUSE_IDN赋给变量DEF_IDN
+	LIB_IDN = $(call FUNC_LIB,$(USE_IDN),$(LDFLAG_IDN)) #以变量USE_IDN和LDFLAG_CAP的内容为参数调用FUNC_LIB,并将结果赋给LIB_IDN。	
 endif
 
 ＃判断重复加载
 # WITHOUT_IFADDRS: DEF_WITHOUT_IFADDRS
-ifneq ($(WITHOUT_IFADDRS),no)
-	DEF_WITHOUT_IFADDRS = -DWITHOUT_IFADDRS
+ifneq ($(WITHOUT_IFADDRS),no)  #判断WITHOUT_IFADDRS的值是否为no
+	DEF_WITHOUT_IFADDRS = -DWITHOUT_IFADDRS  #如果不是—DWITHOUT_IFADDRS赋给变量DEF_WITHOUT_IFADDRS
 endif
 
 # ENABLE_RDISC_SERVER: DEF_ENABLE_RDISC_SERVER
-ifneq ($(ENABLE_RDISC_SERVER),no)
-	DEF_ENABLE_RDISC_SERVER = -DRDISC_SERVER
+ifneq ($(ENABLE_RDISC_SERVER),no) 
+	DEF_ENABLE_RDISC_SERVER = -DRDISC_SERVER #如果不是，则将参数-DRDISC_SERVER赋给变量DEF_ENABLE_RDISC_SERVER
 endif
 
 # ENABLE_PING6_RTHDR: DEF_ENABLE_PING6_RTHDR
-ifneq ($(ENABLE_PING6_RTHDR),no)
-	DEF_ENABLE_PING6_RTHDR = -DPING6_ENABLE_RTHDR
-ifeq ($(ENABLE_PING6_RTHDR),RFC3542)
-	DEF_ENABLE_PING6_RTHDR += -DPINR6_ENABLE_RTHDR_RFC3542
+ifneq ($(ENABLE_PING6_RTHDR),no)#判断ENABLE_PING6_RTHDR的值是否为no
+	DEF_ENABLE_PING6_RTHDR = -DPING6_ENABLE_RTHDR #如果不是，则将-DPING6_ENABLE_RTHDR赋给变量
+ifeq ($(ENABLE_PING6_RTHDR),RFC3542)#判断ENABLE_PING6_RTHDR是否等于RFC3542
+	DEF_ENABLE_PING6_RTHDR += -DPINR6_ENABLE_RTHDR_RFC3542　#如果是，则将 -DPINR6_ENABLE_RTHDR_RFC3542追加给变量
 endif
 endif
 
@@ -134,26 +133,26 @@ IPV6_TARGETS=tracepath6 traceroute6 ping6
 TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
 
 CFLAGS=$(CCOPTOPT) $(CCOPT) $(GLIBCFIX) $(DEFINES)＃ 编译选项
-LDLIBS=$(LDLIB) $(ADDLIB)
+LDLIBS=$(LDLIB) $(ADDLIB)　 #链接的库函数
 
 #将命令 uname -n 的输出给变量UNAME_N
 UNAME_N:=$(shell uname -n)
-LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')
-TODAY=$(shell date +%Y/%m/%d)
-DATE=$(shell date --date $(TODAY) +%Y%m%d)
-TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)
+LASTTAG:=$(shell git describe HEAD | sed -e 's/-.*//')#将HEAD中的-.*替换为/
+TODAY=$(shell date +%Y/%m/%d)#用%Y/%m/%d的格式输出年月日， 并保存到TODAY变量中。
+DATE=$(shell date --date $(TODAY) +%Y%m%d)#将TODAY中的内容以%Y%m%d的格式赋给DATE
+TAG:=$(shell date --date=$(TODAY) +s%Y%m%d)#将TODAY的内容以s%Y%m%d的格式赋给TAG
 
 
 # -------------------------------------
 ＃检查内核模块在编译过程中产生的中间文件即垃圾文件并加以清除
 .PHONY: all ninfod clean distclean man html check-kernel modules snapshot
-#.PHONY后面是伪目标文件
+#.PHONY后面是伪目标文件，通过make+不同的命令来执行。
 all: $(TARGETS)
 
 %.s: %.c　＃符号％是通配符，%.s依赖%.c
-	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -S -o $@ 
+	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -S -o $@ #删除所有的.o文件，将所有的.c文件编译成对应的.s文件。
 %.o: %.c  ＃%.o依赖%.c
-	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -o $@
+	$(COMPILE.c) $< $(DEF_$(patsubst %.o,%,$@)) -o $@#将所有的.o文件编译生成目标所要的可执行文件。
 $(TARGETS): %: %.o
 	$(LINK.o) $^ $(LIB_$@) $(LDLIBS) -o $@
 #
